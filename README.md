@@ -1,6 +1,7 @@
 # Bioinformatics-2.0-Revolutionizing-Data-Driven-Biological-Exploration
 Bioinformatics 2.0 is a data-driven revolution in biological research, integrating diverse datasets to glean holistic insights. 
-![Uploading image.png…]()
+![Uploading image.png…]()  
+
 Introduction
 The field of bioinformatics has undergone a remarkable transformation with the emergence of Bioinformatics 2.0. This new era represents a paradigm shift in how biological data is collected, processed, analyzed, and translated into meaningful insights. Bioinformatics 2.0 harnesses the power of advanced technologies and computational methods to address the unprecedented challenges posed by the explosive growth of biological data.
 
