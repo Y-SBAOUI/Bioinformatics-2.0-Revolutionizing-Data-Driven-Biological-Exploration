@@ -4,7 +4,6 @@ Keywords: #Supervised_Machine_Learning; #Biostatistics, #ANOVA, #One_way_ANOVA; 
 -----------------------------------------------------------------------------------------------------------------------------------
 1.	Les different tests statistiques
 About: Statistical Methods and Supervised Machine Learning in R" provides comprehensive insights into applying statistical techniques and supervised machine learning algorithms using the R programming language. Explore variable relationships, model evaluation, and hypothesis testing. Ideal for data enthusiasts and aspiring data scientists.
-
 -----------------------------------------------------------------------------------------------------------------------------------
 About ANOVA:  is a statistical test for estimating the evolution of a quantitative dependent variable as a function of the levels of one or more categorical independent variables. ANOVA tests whether there is a difference in group means at each level of the independent variable. 
 -----------------------------------------------------------------------------------------------------------------------------------
@@ -55,8 +54,6 @@ Interpretation: In this study, the significance level is 5%. The p-value obtaine
 In the two-way ANOVA example, we model the extraction yield of secondary metabolites as a function of climate type and soil type. We first use aov() to run the model, then use summary() to visualize the model summary.
          two.way <- aov(yield ~ Climat + Soil, data = crop_data)
           summary(two.way)
-
-After execution, You should has an Output like these. 
  
 Interpretation: Adding soil type to the model seems to have made no difference: it has reduced the residual variance (the residual sum of squares has gone from 94 to 93), and its statistical value is lower than that of climate, so there may well be an effect.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -66,8 +63,6 @@ Sometimes we think that two of our independent variables have an interaction eff
 For example, in this experiment on the extraction yield of secondary metabolites, it's possible that the nature of the soil could affect the plants' ability to express secondary metabolites. This could influence the nature and quantity of these metabolites in a way that is not accounted for in the two-factor model. So, to test whether two variables have an interaction effect in the ANOVA, simply use an asterisk instead of a plus sign in the model:
 interaction <- aov(yield ~ Climat*Soil, data = crop_data)
 summary(interaction)
-
-After execution, You should has an Output like these. 
  
 Interpretation: In the output table, the variable "Climate: Soil" has a low sum-of-squares value and a high p-value, meaning that there is not much variation that can be explained by the interaction between soil and climate.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -78,7 +73,7 @@ blocking <- aov(yield ~ Climat + Soil + Species, data = crop_data)
 summary(blocking)
 
 Interpretation: The "block or species" variable has a low sum-of-squares value (1.318e+28) and a low p-value (p = 0.0236), so it probably adds a lot of information to the model. It may thus change the sum of squares of the two independent variables, meaning that it affects the variation of the dependent variable they explain (yield of secondary metabolites).
- 
+ ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 VI. Step 3: Find the best-fitting model
 There are now four different ANOVA models to explain the data. It's time to decide which one to use, isn't it? In general, you'll want to use the "best-fit" model, i.e. the model that best explains the variation in the dependent variable. A good test of model fit is the Akaike Information Criterion (AIC). The AIC calculates the information value of each model by balancing the variation explained against the number of parameters used. 
 In AIC model selection, we compare the information value of each model and choose the one with the lowest AIC value (a lower number means more explained information!).
@@ -87,58 +82,57 @@ model.set <- list(one.way, two.way, interaction, blocking)
 model.names <- c("one.way", "two.way", "interaction", "blocking")
 aictab(model.set, modnames = model.names)
 
-After execution, You should has an Output like these. 
-
 Interpretation: From these results, it appears that the blocking model is the best fit. The blocking model has the lowest AIC value and 69% of the AIC weight, meaning that it explains 69% of the total variation in the dependent variable that can be explained by the full set of models. The model with the two-way Anova term contains a further 14% of the AIC weight. This suggests a combination between the two blocking parameters (Soil and climate) using a two-way ANOVA.
- 
+ ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 VII- Step 4: Check for homoscedasticity
 To check whether the model meets the homoscedasticity assumption, examine the model's diagnostic diagrams in R using the (plot) function:
-
-par(mfrow=c(2,2))
-plot(two.way)
-par(mfrow=c(1,1))
-
-After execution, You should has graphs as output. 
- 
+      par(mfrow=c(2,2))
+      plot(two.way)
+      par(mfrow=c(1,1))
 Interpretation: Diagnostic plots show the unexplained variance (residuals) over the range of observed data. Each graph communicates specific information about the fit of the model, but all you need to know is that the red line representing the mean of the residuals should be horizontal and centered on zero (or on one, in the scale-location graph), meaning that there are no large outliers that would cause a search bias in the model.
 The normal QQ graph plots a regression between the theoretical residuals of a perfectly homoscedastic model and the actual residuals of your model, so the closer it is to a slope of 1, the better. This QQ graph is not very close, with a little deviation. From these diagnostic plots, we can tell that the model does not meet the homoscedasticity assumption. 
 N.B: If your model doesn't fit the homoscedasticity hypothesis, you can try the Kruskall-Wallis test instead.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 VII- Step 5: Perform a post-hoc test
 ANOVA tells us if there are differences between the group means, but not what those differences are. To find out which groups are statistically different from each other, we can perform a post-hoc Tukey's Highly Significant Difference (HSD) test for pairwise comparisons:
 tukey.two.way<-TukeyHSD(two.way)
 tukey.two.way
-
-N.B: In our case, we can't perform a post hoc test because the results didn't reveal any difference except for the species, but if at this stage you've found that the difference is significant, you're looking to identify the effect. You need to apply the post-hoc.But if there is a difference and we want to identify the effect of this difference, we can continue to execute the underlying code according to the following steps
+N.B: In our case, we can't perform a post hoc test because the results didn't reveal any difference except for the species, but if at this stage you've found that the difference is significant, you're looking to identify the effect. You need to apply the post-hoc.But if there is a difference and we want to identify the effect of this difference, we can continue to execute the underlying code according to the following steps.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 VII- Step 6: Plot results in a graph
 When plotting the results of a model, it is important to display:
-	Raw data
+	 Raw data
 	Summary information, usually the mean and standard error for each group compared
 	Letters or symbols above each comparison group to indicate differences by group.
-
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 1- Finding group differences
 In this step, we need to combine the interdependent variables each time by combining ANOVA+tukeyHSD
 tukey.plot.aov<-aov(yield ~ fertilizer:density, data=crop.data)
 Instead of expressing TukeyHSD results in a table, we'll do it in a graph.
-tukey.plot.test<-TukeyHSD(tukey.plot.aov)
-plot(tukey.plot.test, las = 1)
-
+       tukey.plot.test<-TukeyHSD(tukey.plot.aov)
+       plot(tukey.plot.test, las = 1)
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 2- Plotting raw data
-two.way.plot <- ggplot(crop.data, aes(x = density, y = yield, group=fertilizer)) + geom_point(cex = 1.5, pch = 1.0,position = position_jitter(w = 0.1, h = 0))
-two.way.plot
-
-3- Adding averages and standard errors to the graph
-two.way.plot <- two.way.plot + stat_summary(fun.data = 'mean_se', geom = 'errorbar', width = 0.2) + stat_summary(fun.data = 'mean_se', geom = 'pointrange') + geom_point(data=mean.yield.data, aes(x=density, y=yield)) 
-3. two.way.plot
+      two.way.plot <- ggplot(crop.data, aes(x = density, y = yield, group=fertilizer)) + geom_point(cex = 1.5, pch = 1.0,position = position_jitter(w = 0.1, h = 0))
+      two.way.plot
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4- Adding averages and standard errors to the graph
+       two.way.plot <- two.way.plot + stat_summary(fun.data = 'mean_se', geom = 'errorbar', width = 0.2) + stat_summary(fun.data = 'mean_se', geom = 'pointrange') + 
+       geom_point(data=mean.yield.data, aes(x=density, y=yield)) 
+        two.way.plot
 If you find it very difficult to read them in a single graph, you can separate them in the next step.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 4.  Dividing the data
 To show which groups are different from each other, use facet_wrap() to divide the data into different variables. To add labels, use geom_text() and add the group letters from the mean.yield.data frame you created earlier.
-two.way.plot <- two.way.plot + geom_text(data=mean.yield.data, label=mean.yield.data$group, vjust = -8, size = 5) + facet_wrap(~ fertilizer)
-two.way.plot
+      two.way.plot <- two.way.plot + geom_text(data=mean.yield.data, label=mean.yield.data$group, vjust = -8, size = 5) + facet_wrap(~ fertilizer)
+      two.way.plot
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 4. Preparing the graph for publication
-two.way.plot <- two.way.plot +  theme_classic2() + labs(title = "Crop yield in response to fertilizer mix and planting density",
+     two.way.plot <- two.way.plot +  theme_classic2() + labs(title = "Crop yield in response to fertilizer mix and planting density",
        x = "Planting density (1=low density, 2=high density)",
        y = "Yield (bushels per acre)")
-two.way.plot
+       two.way.plot
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 5. Step 7: Report the results
 In addition to a graph, it's important to report the results of the ANOVA test. This includes
 	A brief description of the variables you tested
